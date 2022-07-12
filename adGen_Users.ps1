@@ -6,9 +6,14 @@
     Email  
     UserId    #>
 
-Import-Module ActiveDirectory
 
-$NUMBER_OF_USERS = 100
+if ($Args[0] -is [int]){
+    $NUMBER_OF_USERS = $Args[0];
+} else {
+    Write-Output "Invalid Input for Users defaulting to default Value";
+    $NUMBER_OF_USERS = 1
+
+}
 
 $GROUPS_LIST = Get-Content .\data\Groups.txt
 $FIRST_NAMES_LIST = Get-Content .\data\FirstNames.txt
