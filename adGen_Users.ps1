@@ -10,8 +10,8 @@
 if ($Args[0] -is [int]){
     $NUMBER_OF_USERS = $Args[0];
 } else {
-    Write-Output "Invalid Input for Users defaulting to default Value";
-    $NUMBER_OF_USERS = 1
+    Write-Output "Invalid Input for Users defaulting to default Value [100]";
+    $NUMBER_OF_USERS = 100
 
 }
 
@@ -34,7 +34,7 @@ function genUsers{
 }
 
 function createUser{
-    $NumberOfGroups = Get-Random -Minimum 1 -Maximum 5
+    $NumberOfGroups = Get-Random -Minimum 1 -Maximum 3
     $UserGroups = $GROUPS_LIST | Get-Random -Count $NumberOfGroups;
     $FirstName = $FIRST_NAMES_LIST | Get-Random;
     $LastName = $LAST_NAMES_LIST | Get-Random;
