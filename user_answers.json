@@ -1,21 +1,13 @@
 [
     {
-        "Password":  "3\u0026TD*1kl",
+        "Password":  ".yDz+`!\"",
         "Groups":  [
-                       "System Admistrator",
+                       "WEHelpDesk",
                        "Human Resources"
                    ],
-        "LastName":  "Dodson",
-        "Email":  "RDodson523vm.com",
-        "UserId":  "RDodson523",
-        "FirstName":  "Richele"
-    },
-    {
-        "Password":  "YNab*?iF",
-        "Groups":  "WEHelpDesk",
-        "LastName":  "Frank",
-        "Email":  "CFrank668vm.com",
-        "UserId":  "CFrank668",
-        "FirstName":  "Crysta"
+        "LastName":  "Monroe",
+        "Email":  "MMonroe423vm.com",
+        "UserId":  "MMonroe423",
+        "FirstName":  "Meriah"
     }
 ]

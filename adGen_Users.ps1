@@ -9,10 +9,11 @@
 
 if ($Args[0] -is [int]){
     $NUMBER_OF_USERS = $Args[0];
+    $NUMBER_OF_COMPUTERS = [math]::Ceiling($NUMBER_OF_USERS / 10);
 } else {
     Write-Output "Invalid Input for Users defaulting to default Value [100]";
     $NUMBER_OF_USERS = 100
-
+    $NUMBER_OF_COMPUTERS = [math]::Ceiling($NUMBER_OF_USERS / 10);
 }
 
 $GROUPS_LIST = Get-Content .\data\Groups.txt
@@ -30,7 +31,9 @@ function genUsers{
         [void]$Users.Add($User);
     }
 
-    return $Users;
+    $UsersJson = ConvertTo-Json $Users ;
+    
+    Set-Content -Path  ".\user_answers.json" -Value $UsersJson;
 }
 
 function createUser{
@@ -55,8 +58,25 @@ function createUser{
     return $User;
 }
 
-$Users = genUsers;
+function genComputers{
+    $ComputersArray = @();
 
-$UsersJson = ConvertTo-Json $Users ;
+    [System.Collections.ArrayList]$Computers = $ComputersArray;
 
-Set-Content -Path  ".\user_answers.json" -Value $UsersJson;
+    for($num = 1; $num -le $NUMBER_OF_COMPUTERS; $num++){
+        $PCName = "WE Computer "+$num
+        $Computer = @{
+            Name = $PCName
+            SamAccountName = $PCName
+            Enabled = $True
+        }
+
+        [void]$Computers.Add($Computer);
+    }
+    $ComputersJson = ConvertTo-Json $Computers ;
+    
+    Set-Content -Path  ".\computers_anwsers.json" -Value $ComputersJson;
+}
+
+#genUsers;
+genComputers;

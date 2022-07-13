@@ -3,6 +3,7 @@ Import-Module ActiveDirectory
 $GROUPS_LIST = Get-Content .\data\Groups.txt
 
 $Users = Get-Content .\user_answers.json | ConvertFrom-Json;
+$Computers = Get-Content .\computers_anwsers.json | ConvertFrom-Json;
 
 if ($Args[0] -eq "cleanup"){
     Remove-ADOrganizationalUnit -Identity "OU=WE,DC=vm,DC=COM" -Recursive 
@@ -53,8 +54,18 @@ function addADGroups{
         #1 == Global
     }
 }
- 
+
+function addADComputers{
+    ForEach($Computer in $Computers){
+        New-ADComputer `
+        -Name $Computer.Name `
+        -SamAccountName $Computer.SamAccountName `
+        -Path "OU=WE Computers,OU=WE,DC=vm,DC=COM" `
+        -Enabled $True
+    }
+}
+
 setUpOUs;
 addADGroups;
 addADUsers; 
-
+addADComputers;
