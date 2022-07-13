@@ -78,5 +78,14 @@ function genComputers{
     Set-Content -Path  ".\computers_anwsers.json" -Value $ComputersJson;
 }
 
-genUsers;
-genComputers;
+function getUsernames{
+    $Users = Get-Content .\user_answers.json | ConvertFrom-Json;
+    foreach($user in $Users){
+        Add-Content -Path .\Data\usernames.txt -Value $user.UserId
+    }
+
+}
+
+#genUsers;
+#genComputers;
+#getUsernames;
