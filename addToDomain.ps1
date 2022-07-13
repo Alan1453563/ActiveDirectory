@@ -29,21 +29,19 @@ function addADUsers{
             -Description $user.Description `
             -EmailAddress $user.Email `
             -Path "OU=WE Users,OU=WE,DC=vm,DC=COM" `
-            -Enabled $True
+            -Enabled $True 
+
+        $id = $user.UserId
+        $userG = Get-ADUser -Filter "UserPrincipalName -eq '$id'" -SearchBase "OU=WE Users,OU=WE,DC=vm,DC=COM";
 
         ForEach($group in $user.Groups){
-            Write-Output $group;
-            Write-Output $user.UserId;
-            Add-ADGroupMember `
-                -Identity $group `
-                -Members "CN="+$user.UserId+", OU=WE Users,OU=WE,DC=vm,DC=COM"
-        }
+            Add-ADGroupMember -Identity $group -Members $userG
+        } 
     }
 }
 #New-ADGroup -Name "RODC Admins" -SamAccountName RODCAdmins -GroupCategory Security -GroupScope Global -DisplayName "RODC Administrators" -Path "CN=Users,DC=Fabrikam,DC=Com" -Description "Members of this group are RODC Administrators"
 function addADGroups{
     ForEach ($group in $GROUPS_LIST){
-        Write-Output $group;
         New-ADGroup `
             -Name $group `
             -GroupCategory 1 `
@@ -55,7 +53,8 @@ function addADGroups{
         #1 == Global
     }
 }
-
+<# 
 setUpOUs;
-addADGroups;
-addADUsers;
+addADGroups;#>
+addADUsers; 
+
