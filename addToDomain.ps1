@@ -53,8 +53,8 @@ function addADGroups{
         #1 == Global
     }
 }
-<# 
+ 
 setUpOUs;
-addADGroups;#>
+addADGroups;
 addADUsers; 
 
