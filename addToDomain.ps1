@@ -1,25 +1,61 @@
 Import-Module ActiveDirectory
 
+$GROUPS_LIST = Get-Content .\data\Groups.txt
+
 $Users = Get-Content .\user_answers.json | ConvertFrom-Json;
-Write-Output Get-ADDomain;
+
+if ($Args[0] -eq "cleanup"){
+    Remove-ADOrganizationalUnit -Identity "OU=WE,DC=vm,DC=COM" -Recursive 
+}elseif($Args[0] -eq "help"){
+    Write-Output "cleanup to clean the directory before adding the users"
+}
 
 function setUpOUs{
-    New-ADOrganizationalUnit -Name "willarsEngineering" -Path "DC=vm,DC=COM" -ProtectedFromAccidentalDeletion $False
+    New-ADOrganizationalUnit -Name "WE" -Path "DC=vm,DC=COM" -ProtectedFromAccidentalDeletion $False
+    New-ADOrganizationalUnit -Name "WE Computers" -Path "OU=WE,DC=vm,DC=COM" -ProtectedFromAccidentalDeletion $False
+    New-ADOrganizationalUnit -Name "WE Users" -Path "OU=WE,DC=vm,DC=COM" -ProtectedFromAccidentalDeletion $False 
+    New-ADOrganizationalUnit -Name "WE Groups" -Path "OU=WE,DC=vm,DC=COM" -ProtectedFromAccidentalDeletion $False
+    New-ADOrganizationalUnit -Name "WE Servers" -Path "OU=WE,DC=vm,DC=COM" -ProtectedFromAccidentalDeletion $False 
 }
 
 function addADUsers{
     ForEach ($user in $Users){
         New-ADUser `
-            -
+            -Name ($user.FirstName + " " + $user.LastName) `
+            -GivenName $user.FirstName `
+            -Surname $user.LastName `
+            -UserPrincipalName $user.UserId `
+            -AccountPassword (ConvertTo-SecureString $user.Password -AsPlainText -Force) `
+            -Description $user.Description `
+            -EmailAddress $user.Email `
+            -Path "OU=WE Users,OU=WE,DC=vm,DC=COM" `
+            -Enabled $True
+
+        ForEach($group in $user.Groups){
+            Write-Output $group;
+            Write-Output $user.UserId;
+            Add-ADGroupMember `
+                -Identity $group `
+                -Members "CN="+$user.UserId+", OU=WE Users,OU=WE,DC=vm,DC=COM"
+        }
+    }
+}
+#New-ADGroup -Name "RODC Admins" -SamAccountName RODCAdmins -GroupCategory Security -GroupScope Global -DisplayName "RODC Administrators" -Path "CN=Users,DC=Fabrikam,DC=Com" -Description "Members of this group are RODC Administrators"
+function addADGroups{
+    ForEach ($group in $GROUPS_LIST){
+        Write-Output $group;
+        New-ADGroup `
+            -Name $group `
+            -GroupCategory 1 `
+            -GroupScope 1 `
+            -DisplayName $group `
+            -Path "OU=WE Groups,OU=WE,DC=vm,DC=COM" `
+            -Description "Added by an automated Script" `
+        #1 == Security
+        #1 == Global
     }
 }
 
-function addADGroups{
-
-}
-
-function cleanUpAD{
-
-}
-
 setUpOUs;
+addADGroups;
+addADUsers;

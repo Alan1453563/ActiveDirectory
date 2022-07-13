@@ -1,5 +1,5 @@
-Engineering
-HelpDesk
+WEEngineering
+WEHelpDesk
 Human Resources
 Sales 
 Consultant
