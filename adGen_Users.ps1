@@ -78,5 +78,5 @@ function genComputers{
     Set-Content -Path  ".\computers_anwsers.json" -Value $ComputersJson;
 }
 
-#genUsers;
+genUsers;
 genComputers;
