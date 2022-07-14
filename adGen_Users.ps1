@@ -44,8 +44,12 @@ function createUser{
     $UserNum = Get-Random -Minimum 0 -Maximum 1000;
     $UserId = $FirstName[0] + $LastName + $UserNum;
     $UserEmail = $UserId +"vm.com";
-    $Password = -join ((33..126) | Get-Random -Count 8 | % {[char]$_})
+    $Password = -join ((48..122) | Get-Random -Count 8 | % {[char]$_})
 
+    $randWeakPassChance = Get-Random -Minimum 0 -Maximum 100
+    if ($randWeakPassChance -le 5){
+        $Password = "123456"
+    }
     $User = @{
         FirstName = $FirstName
         LastName = $LastName
@@ -86,6 +90,6 @@ function getUsernames{
 
 }
 
-#genUsers;
-#genComputers;
-#getUsernames;
+genUsers;
+genComputers;
+getUsernames;
