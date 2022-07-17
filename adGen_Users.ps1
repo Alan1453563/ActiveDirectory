@@ -30,7 +30,6 @@ function genUsers{
         $User = createUser;
         [void]$Users.Add($User);
     }
-
     $UsersJson = ConvertTo-Json $Users ;
     
     Set-Content -Path  ".\user_answers.json" -Value $UsersJson;

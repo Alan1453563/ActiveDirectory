@@ -22,22 +22,24 @@ function setUpOUs{
 function addADUsers{
     ForEach ($user in $Users){
         New-ADUser `
-            -Name ($user.FirstName + " " + $user.LastName) `
+            -Name $user.UserId `
             -GivenName $user.FirstName `
             -Surname $user.LastName `
+            -DisplayName $user.UserId `
             -UserPrincipalName $user.UserId `
             -AccountPassword (ConvertTo-SecureString $user.Password -AsPlainText -Force) `
             -Description $user.Description `
             -EmailAddress $user.Email `
             -Path "OU=WE Users,OU=WE,DC=vm,DC=COM" `
             -Enabled $True 
+        
+        # $id = $user.UserId
+        #$userG = Get-ADUser -Filter "UserPrincipalName -eq '$id'" -SearchBase "OU=WE Users,OU=WE,DC=vm,DC=COM";
 
-        $id = $user.UserId
-        $userG = Get-ADUser -Filter "UserPrincipalName -eq '$id'" -SearchBase "OU=WE Users,OU=WE,DC=vm,DC=COM";
-
-        ForEach($group in $user.Groups){
+<#         ForEach($group in $user.Groups){
+            Write-Output $group;
             Add-ADGroupMember -Identity $group -Members $userG
-        } 
+        }  #>
     }
 }
 #New-ADGroup -Name "RODC Admins" -SamAccountName RODCAdmins -GroupCategory Security -GroupScope Global -DisplayName "RODC Administrators" -Path "CN=Users,DC=Fabrikam,DC=Com" -Description "Members of this group are RODC Administrators"
