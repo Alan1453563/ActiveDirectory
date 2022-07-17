@@ -19,7 +19,7 @@ if ($Args[0] -is [int]){
 $GROUPS_LIST = Get-Content .\data\Groups.txt
 $FIRST_NAMES_LIST = Get-Content .\data\FirstNames.txt
 $LAST_NAMES_LIST = Get-Content .\data\LastNames.txt
-
+$PASSWORDS = [System.Collections.ArrayList](Get-Content .\Data\passwords.txt);
 
 function genUsers{
     $UsersArray = @();
@@ -43,13 +43,13 @@ function createUser{
     $LastName = $LAST_NAMES_LIST | Get-Random;
     $UserNum = Get-Random -Minimum 0 -Maximum 1000;
     $UserId = $FirstName[0] + $LastName + $UserNum;
-    $UserEmail = $UserId +"vm.com";
-    $Password = -join ((48..122) | Get-Random -Count 8 | % {[char]$_})
-
-    $randWeakPassChance = Get-Random -Minimum 0 -Maximum 100
+    $UserEmail = $UserId +"@vm.com";
+    $Password = $PASSWORDS | Get-Random;
+    $PASSWORDS.Remove($Password);
+<#     $randWeakPassChance = Get-Random -Minimum 0 -Maximum 100
     if ($randWeakPassChance -le 5){
-        $Password = "123456"
-    }
+        $Password = 123456
+    } #>
     $User = @{
         FirstName = $FirstName
         LastName = $LastName
@@ -83,8 +83,10 @@ function genComputers{
 }
 
 function getUsernames{
+    Clear-Content -Path .\Data\usernames.txt;
     $Users = Get-Content .\user_answers.json | ConvertFrom-Json;
     foreach($user in $Users){
+        #Write-Output $user;
         Add-Content -Path .\Data\usernames.txt -Value $user.UserId
     }
 
